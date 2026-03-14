@@ -1,41 +1,177 @@
 {% extends "layout.html" %}
 
-{% block title %}
-    Profile
-{% endblock %}
+{% block title %}{{ user.username }} — CineRef{% endblock %}
 
 {% block main %}
-    <style>
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
+<style>
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
 
-        .shot-card img {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-        }
+    .profile-header {
+        padding: 64px 48px 48px;
+        border-bottom: 1px solid #2e3340;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
 
-        .shot-card a {
-            text-decoration: none;
-        }
-    </style>
+    .profile-name {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        font-size: 48px;
+        font-weight: 400;
+        color: #e8e8e8;
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+        text-transform: capitalize;
+    }
+
+    .profile-badge {
+        display: inline-block;
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #555;
+        border: 1px solid #2e3340;
+        padding: 4px 12px;
+        margin-bottom: 16px;
+    }
+
+    .profile-meta {
+        display: flex;
+        gap: 32px;
+    }
+
+    .profile-meta-item {
+        font-size: 12px;
+        color: #555;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .profile-meta-item span {
+        color: #e8e8e8;
+        display: block;
+        font-size: 13px;
+        letter-spacing: 0;
+        text-transform: none;
+        margin-top: 4px;
+    }
+
+    .profile-bio {
+        max-width: 400px;
+        font-size: 13px;
+        color: #666;
+        line-height: 1.8;
+        text-align: right;
+    }
+
+    .shot-count {
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #555;
+        padding: 32px 48px 16px;
+    }
+
+    .masonry {
+        padding: 0 24px 24px;
+        columns: 4;
+        column-gap: 8px;
+    }
+
+    .shot-card {
+        break-inside: avoid;
+        margin-bottom: 8px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .shot-card img {
+        width: 100%;
+        display: block;
+        transition: transform 0.4s ease, filter 0.4s ease;
+    }
+
+    .shot-card:hover img {
+        transform: scale(1.03);
+        filter: brightness(0.6);
+    }
+
+    .shot-card .hover-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .shot-card:hover .hover-info {
+        opacity: 1;
+    }
+
+    .hover-info .film {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+
+    .hover-info .director {
+        font-size: 11px;
+        color: #aaa;
+        letter-spacing: 1px;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="profile-header">
     <div>
-        <p>Username: {{ user.username }}</p>
-        <p>Bio: {{ user.bio }}</p>
-        <p>Career Status: {{ user.career_status }}</p>
-        <p>Country: {{ user.country }}</p>
-        <p>City: {{ user.city }}</p>
-    </div>
-    <div class="grid">
-        {% for shot in shots %}
-        <a href="/shot/{{ shot.id }}">
-            <div class="shot-card">
-                <img src="/{{ shot.image_path }}" alt="{{ shot.project_name }}">
+        <div class="profile-badge">{{ user.career_status | replace('_', ' ') }}</div>
+        <h1 class="profile-name">{{ user.username }}</h1>
+        <div class="profile-meta">
+            {% if user.city %}
+            <div class="profile-meta-item">
+                Location
+                <span>{{ user.city }}, {{ user.country }}</span>
             </div>
-        </a>
-        {% endfor %}
+            {% else %}
+            <div class="profile-meta-item">
+                Location
+                <span>{{ user.country }}</span>
+            </div>
+            {% endif %}
+            <div class="profile-meta-item">
+                Shots
+                <span>{{ shots | length }}</span>
+            </div>
+        </div>
     </div>
+    {% if user.bio %}
+    <div class="profile-bio">{{ user.bio }}</div>
+    {% endif %}
+</div>
+
+<div class="shot-count">{{ shots | length }} Shot{% if shots | length != 1 %}s{% endif %}</div>
+
+<div class="masonry">
+    {% for shot in shots %}
+    <a href="/shot/{{ shot.id }}" style="text-decoration:none;">
+        <div class="shot-card">
+            <img src="/{{ shot.image_path }}" alt="{{ shot.project_name }}">
+            <div class="hover-info">
+                <div class="film">{{ shot.project_name }}</div>
+                <div class="director">{{ shot.director }} · {{ shot.year }}</div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
 {% endblock %}
