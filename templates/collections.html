@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Collections
+{% endblock %}
+
+{% block main %}
+    <div class="grid">
+        {% for collection in collections %}
+        <a href="/collection/{{ collection.id }}">
+            <div>
+                <p>{{ collection.name }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .shot-card img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+
+        .shot-card a {
+            text-decoration: none;
+        }
+    </style>
+    <div>
+        <p>Username: {{ user.username }}</p>
+        <p>Bio: {{ user.bio }}</p>
+        <p>Career Status: {{ user.career_status }}</p>
+        <p>Country: {{ user.country }}</p>
+        <p>City: {{ user.city }}</p>
+    </div>
+    <div class="grid">
+        {% for shot in shots %}
+        <a href="/shot/{{ shot.id }}">
+            <div class="shot-card">
+                <img src="/{{ shot.image_path }}" alt="{{ shot.project_name }}">
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+{% endblock %}

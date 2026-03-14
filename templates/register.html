@@ -1,30 +1,24 @@
 {% extends "layout.html" %}
 
-{% block title %}
-    Register
-{% endblock %}
+{% block title %}Register — CineRef{% endblock %}
 
 {% block main %}
+<div class="form-container">
+    <p class="form-title">Create Account</p>
     <form action="/register" method="post">
-        <div>
-            <input autocomplete="off" autofocus name="username" placeholder="Username" type="text">
-        </div>
+        <input autocomplete="off" autofocus name="username" placeholder="Username" type="text">
         <select name="career_status">
+            <option value="">Career Status</option>
             <option value="student">Student</option>
             <option value="first_jobber">First-jobber</option>
-            <option value="independent_filmmaker">Independent filmmaker</option>
+            <option value="independent_filmmaker">Independent Filmmaker</option>
             <option value="professional">Professional</option>
             <option value="enthusiast">Enthusiast</option>
         </select>
-        <div>
-            <input name="country" placeholder="Country" type="text">
-        </div>
-        <div>
-            <input name="password" placeholder="Password" type="password">
-        </div>
-        <div>
-            <input name="confirmation" placeholder="Confirm Password" type="password">
-        </div>
+        <input name="country" placeholder="Country" type="text">
+        <input name="password" placeholder="Password" type="password">
+        <input name="confirmation" placeholder="Confirm Password" type="password">
         <button type="submit">Register</button>
     </form>
+</div>
 {% endblock %}

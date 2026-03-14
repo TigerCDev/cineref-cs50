@@ -1,0 +1,176 @@
+{% extends "layout.html" %}
+
+{% block title %}Browse — CineRef{% endblock %}
+
+{% block main %}
+<style>
+    .container {
+        max-width: 100%;
+        padding: 24px;
+    }
+
+   .masonry {
+        width: 100%;
+    }
+
+    .shot-card {
+        break-inside: avoid;
+        margin-bottom: 8px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .shot-card img {
+        width: 100%;
+        display: block;
+        transition: transform 0.4s ease, filter 0.4s ease;
+    }
+
+    .shot-card:hover img {
+        transform: scale(1.03);
+        filter: brightness(0.6);
+    }
+
+    .shot-card .hover-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .shot-card:hover .hover-info {
+        opacity: 1;
+    }
+
+    .hover-info .film {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+
+    .hover-info .director {
+        font-size: 11px;
+        color: #aaa;
+        letter-spacing: 1px;
+        margin-top: 4px;
+    }
+
+    .quote-hero {
+        text-align: center;
+        padding: 80px 200px;
+        transition: opacity 1.5s ease;
+    }
+
+    .quote-text {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        font-size: 20px;
+        color: #e8e8e8;
+        line-height: 1.8;
+        margin-bottom: 16px;
+    }
+
+    .quote-author {
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #555;
+    }
+</style>
+
+<div class="quote-hero">
+    <p class="quote-text"></p>
+    <p class="quote-author"></p>
+</div>
+
+<script>
+    const quotes = [
+        { text: "A film is never really good unless the camera is an eye in the head of a poet.", author: "— Orson Welles" },
+        { text: "Cinema is a mirror by which we often see ourselves.", author: "— Martin Scorsese" },
+        { text: "The screen is a magic medium. It has such power that it can retain interest as it conveys emotions and moods that no other art form can hope to tackle.", author: "— Stanley Kubrick" },
+        { text: "Every shot should mean something.", author: "— Wong Kar-wai" },
+        { text: "I steal from every movie ever made.", author: "— Quentin Tarantino" },
+        { text: "Light is my inspiration, my paint and brush.", author: "— Vilmos Zsigmond" },
+        { text: "A story should have a beginning, a middle, and an end, but not necessarily in that order.", author: "— Jean-Luc Godard" },
+        { text: "To make a film is to improve on life.", author: "— Jean Renoir" },
+        { text: "Cinema is a matter of what's in the frame and what's out.", author: "— Martin Scorsese" },
+        { text: "The camera is an instrument that teaches people how to see without a camera.", author: "— Dorothea Lange" },
+        { text: "Film is truth at 24 frames per second.", author: "— Jean-Luc Godard" },
+        { text: "I don't dream at night, I dream all day; I dream for a living.", author: "— Steven Spielberg" }
+    ];
+
+    let current = 0;
+    const textEl = document.querySelector('.quote-text');
+    const authorEl = document.querySelector('.quote-author');
+    const hero = document.querySelector('.quote-hero');
+
+    function showQuote() {
+        hero.style.opacity = 0;
+        setTimeout(() => {
+            textEl.textContent = '"' + quotes[current].text + '"';
+            authorEl.textContent = quotes[current].author;
+            hero.style.opacity = 1;
+            current = (current + 1) % quotes.length;
+        }, 1500);
+    }
+
+    showQuote();
+    setInterval(showQuote, 5000);
+</script>
+
+<div class="masonry">
+    {% for shot in shots %}
+    <a href="/shot/{{ shot.id }}" style="text-decoration:none;">
+        <div class="shot-card">
+            <img src="/{{ shot.image_path }}" alt="{{ shot.project_name }}">
+            <div class="hover-info">
+                <div class="film">{{ shot.project_name }}</div>
+                <div class="director">{{ shot.director }} · {{ shot.year }}</div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<script>
+    function buildMasonry() {
+        const container = document.querySelector('.masonry');
+        const cards = Array.from(container.querySelectorAll('a'));
+        const colCount = 4;
+        
+        // Create column divs
+        container.innerHTML = '';
+        container.style.display = 'flex';
+        container.style.gap = '8px';
+        container.style.alignItems = 'flex-start';
+        
+        const cols = [];
+        for (let i = 0; i < colCount; i++) {
+            const col = document.createElement('div');
+            col.style.flex = '1';
+            col.style.display = 'flex';
+            col.style.flexDirection = 'column';
+            col.style.gap = '8px';
+            container.appendChild(col);
+            cols.push({ el: col, height: 0 });
+        }
+        
+        // Place each card in the shortest column
+        cards.forEach(card => {
+            const shortest = cols.reduce((min, col) => 
+                col.height < min.height ? col : min
+            );
+            shortest.el.appendChild(card);
+            shortest.height += card.querySelector('img').naturalHeight || 200;
+        });
+    }
+
+    window.addEventListener('load', buildMasonry);
+</script>
+{% endblock %}
