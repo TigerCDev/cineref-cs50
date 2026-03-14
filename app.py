@@ -72,9 +72,9 @@ def login():
         
         session.clear()
         session["user_id"] = rows[0]["id"]
-
+        session["username"] = rows[0]["username"]
         return redirect("/")
-    
+  
     else:
         return render_template("login.html")
 
