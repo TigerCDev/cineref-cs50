@@ -7,3 +7,4 @@ flask_session/
 .flaskenv
 .venv
 .DS_Store
+.vscode
