@@ -1,5 +1,4 @@
 # CineRef
-#### Description:
 
 ## What is CineRef?
 
