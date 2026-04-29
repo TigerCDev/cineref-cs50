@@ -8,3 +8,4 @@ flask_session/
 .venv
 .DS_Store
 .vscode
+paper.txt
