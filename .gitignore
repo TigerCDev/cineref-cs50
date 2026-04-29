@@ -5,3 +5,4 @@ __pycache__/
 flask_session/
 .env
 .flaskenv
+.venv
